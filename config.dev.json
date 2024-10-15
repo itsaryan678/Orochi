@@ -113,10 +113,10 @@
 		}
 	},
 	"hideNotiMessage": {
-		"commandNotFound": false,
-		"adminOnly": false,
-		"threadBanned": false,
-		"userBanned": false,
+		"commandNotFound": true,
+		"adminOnly": true,
+		"threadBanned": true,
+		"userBanned": true,
 		"needRoleToUseCmd": false,
 		"needRoleToUseCmdOnReply": false,
 		"needRoleToUseCmdOnReaction": false
