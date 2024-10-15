@@ -26,10 +26,10 @@ module.exports = {
 			session2: "noon",
 			session3: "afternoon",
 			session4: "evening",
-			welcomeMessage: "Thank you for inviting me to the group!\nBot prefix: %1\nTo view the list of commands, please enter: %1help",
+			welcomeMessage: "✅ | 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱\n━━━━━━━━━━━━\n\n𝖮𝗋𝗈𝖼𝗁𝗂 𝖡𝖾𝗌𝗍𝖻𝗈𝗍 𝗁𝖺𝗌 𝖻𝖾𝖾𝗇 𝗌𝗎𝖼𝖼𝖾𝗌𝗌𝖿𝗎𝗅𝗅𝗒 𝖼𝗈𝗇𝗇𝖾𝖼𝗍. 𝖳𝗁𝖺𝗇𝗄 𝗒𝗈𝗎 𝖿𝗈𝗋 𝗎𝗌𝗂𝗇𝗀 𝗈𝗎𝗋 𝖢𝗁𝖺𝗍𝖻𝗈𝗍",
 			multiple1: "you",
 			multiple2: "you guys",
-			defaultWelcomeMessage: `Hello {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊`
+			defaultWelcomeMessage: `👑 | 𝗪𝗲𝗹𝗰𝗼𝗺𝗲\n━━━━━━━━━━━━\n\n𝖧𝖾𝗅𝗅𝗈 {userName}! 𝖶𝖾𝗅𝖼𝗈𝗆𝖾 𝗍𝗈 {boxName}. 𝖶𝖾'𝗋𝖾 𝗍𝗁𝗋𝗂𝗅𝗅𝖾𝖽 𝗍𝗈 𝗁𝖺𝗏𝖾 𝗒𝗈𝗎 𝗁𝖾𝗋𝖾! 🎉`
 		}
 	},
 
