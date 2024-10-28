@@ -10,7 +10,7 @@ module.exports = {
     longDescription: {
       en: "Check bot system prefix"
     },
-    category: "box chat",
+    category: "info",
     guide: {
       en: "   {pn} <new prefix>: change the prefix in your box chat"
         + "\n   Example:"
