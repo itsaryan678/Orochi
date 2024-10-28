@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+const { getPrefix } = global.utils;
+const { commands, aliases } = global.GoatBot;
 
 function apply(text, fontMap) {
   return text.replace(/[a-zA-Z0-9]/g, (char) => fontMap[char] || char);
@@ -30,59 +30,88 @@ const bold = {
 module.exports = {
   config: {
     name: "help",
-    version: "1.0",
-    author: "ArYAN © GoatStore",//don't change my credits please 
+    version: "1.18",
+    author: "Itz Aryan",
     countDown: 5,
-    role: 0,
-    longDescription: {
-      en: "This command allows you to see all available commands list"
+    shortDescription: {
+      en: "View command usage and list all commands directly",
     },
-    category: "guide",
+    longDescription: {
+      en: "View command usage and list all commands directly",
+    },
+    category: "info",
     guide: {
-      en: "To use this command, type ${prefix}help [ empty || CommandName ]"
-    }
+      en: "{p}help cmdName ",
+    },
+    priority: 1,
   },
 
-  onStart: async function ({ api, event, args }) {
-    try {
-      const commandFiles = fs
-        .readdirSync(path.join(__dirname, '..', 'cmds'))
-        .filter((file) => file.endsWith(".js"));
+  onStart: async function ({ message, args, event, threadsData }) {
+    const { threadID } = event;
+    const prefix = getPrefix(threadID);
 
-      const commands = commandFiles.map(file => require(path.join(__dirname, '..', 'cmds', file)));
+    if (args.length === 0) {
+      const categories = {};
+      let msg = "";
 
-      const itemsPerPage = 10; // Number of commands to show per page
-      const totalPages = Math.ceil(commands.length / itemsPerPage);
-
-      let page = 1;
-      if (args.length > 0 && !isNaN(args[0])) {
-        page = parseInt(args[0], 10);
-        if (page < 1) page = 1;
-        if (page > totalPages) page = totalPages;
+      for (const [name, value] of commands) {
+        const category = value.config.category || "Uncategorized";
+        if (!categories[category]) {
+          categories[category] = [];
+        }
+        categories[category].push(name);
       }
 
-      const startIndex = (page - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
+      for (const [category, commandsList] of Object.entries(categories)) {
+        if (category !== "info") {
+          const boldCategory = apply(category.toUpperCase(), bold);
+          let section = `\n╭─⊙『  ${boldCategory}  』`;
 
-      let helpMessage = `📍| 𝗔𝗟𝗟 𝗖𝗢𝗠𝗠𝗔𝗡𝗗𝗦\n\n`;
-      for (let i = startIndex; i < endIndex && i < commands.length; i++) {
-        const { name, role, longDescription } = commands[i].config;
-        helpMessage += apply(`├─${role === 2 ? "👑 | " : "🆓 | "}${name}\n`, bold);
-        helpMessage += apply(`│    ${longDescription && longDescription.en ? longDescription.en : "No description available"}\n`, sans);
-        helpMessage += apply(`├─────────────⟡\n`, sans);
+          for (let i = 0; i < commandsList.length; i += 2) {
+            const sansCommands = commandsList
+              .slice(i, i + 2)
+              .map((command) => `✧ ${apply(command, sans)}`)
+              .join(" ");
+            section += `\n│${sansCommands}`;
+          }
+          section += `\n╰────────────⊙`;
+          msg += section;
+        }
       }
 
-      helpMessage += `├─⚙ Total Pages: ${page}/${totalPages}\n`;
-      helpMessage += apply(`│ 👑 𝖬𝖺𝖽𝖾 𝗐𝗂𝗍𝗁 💜 𝖻𝗒 𝗔𝗿𝗬𝗔𝗡\n`, sans);
-      helpMessage += apply(`╰───────────────⟡\n`, sans);
+      await message.reply({ body: msg });
+    } else {
+      const commandName = args[0].toLowerCase();
+      const command = commands.get(commandName) || commands.get(aliases.get(commandName));
 
-      api.sendMessage({
-        body: helpMessage,
-      }, event.threadID, event.messageID);
+      if (!command) {
+        await message.reply(`Command "${commandName}" not found.`);
+      } else {
+        const configCommand = command.config;
+        const author = configCommand.author || "Unknown";
 
-    } catch (error) {
-      console.error("Error in help command:", error);
-      api.sendMessage("An error occurred while executing the command.", event.threadID, event.messageID);
+        const longDescription = configCommand.longDescription
+          ? configCommand.longDescription.en || "No description"
+          : "No description";
+
+        const guideBody = configCommand.guide?.en || "No guide available.";
+        const usage = guideBody.replace(/{p}/g, prefix).replace(/{n}/g, configCommand.name);
+
+        const formattedDescription = apply(longDescription, sans);
+        const formattedUsage = apply(usage, sans);
+        const formattedCommandName = apply(configCommand.name, bold);
+
+        const response = `
+╭───⊙
+  │ 🔶 ${formattedCommandName}
+  ├── INFO
+  │ 📝 𝗗𝗲𝘀𝗰𝗿𝗶𝗽𝘁𝗶𝗼𝗻: ${formattedDescription}
+  │ 👑 𝗔𝘂𝘁𝗵𝗼𝗿: ${author}
+  │ ⚙ 𝗚𝘂𝗶𝗱𝗲: ${formattedUsage}
+  ╰────────────⊙`;
+
+        await message.reply(response);
+      }
     }
   },
 };
