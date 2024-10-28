@@ -10,7 +10,7 @@ module.exports = {
  role: 0, 
  shortDescription: "Uploads an image or video to Imgur.",
  longDescription: "Allows users to upload an image or video to Imgur via a provided URL or attached media.",
- category: "tools",
+ category: "media",
  guide: "{p}imgur <link or reply to media> - Upload media to Imgur.",
  usages: "Link or media reply",
  cooldowns: 5, 
