@@ -43,7 +43,7 @@ module.exports = {
       }
 
       try {
-        const response = await axios.post('https://goatbin.vercel.app/v1/paste', { code: data });
+        const response = await axios.post('https://c-v5.onrender.com/v1/paste', { code: data });
 
         if (response.data && response.data.link) {
           const goatbinLink = response.data.link;
