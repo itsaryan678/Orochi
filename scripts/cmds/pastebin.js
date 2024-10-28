@@ -7,7 +7,7 @@ module.exports = {
     name: "goatbin",
     aliases: ["gb", "bin", "pastebin"],
     version: "1.0",
-    author: "GoatMart",
+    author: "owner",
     countDown: 5,
     role: 2,
     shortDescription: {
