@@ -21,7 +21,7 @@ module.exports = {
  longDescription: {
  en: "Generate temporary email and check inbox"
  },
- category: "email",
+ category: "info",
  guide: {
  en: "{p}tempmail <subcommand>\n\nFor Example:\n{p}tempmail gen\n{p}tempmail inbox <tempmail>"
  }
