@@ -36,7 +36,7 @@ module.exports = {
  numberSearch = 20;
  }
 
- const apiUrl = `https://c-v3.onrender.com/api/pint?search=${encodeURIComponent(keySearchs)}&count=${numberSearch}`;
+ const apiUrl = `https://c-v5.onrender.com/api/pint?search=${encodeURIComponent(keySearchs)}&count=${numberSearch}`;
 
  const res = await axios.get(apiUrl);
  const data = res.data.data;
