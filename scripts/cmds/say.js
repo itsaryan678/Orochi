@@ -26,7 +26,7 @@ module.exports = {
             }
 
             let say = encodeURIComponent(text);
-            let url = `https://c-v1.onrender.com/tts?text=${say}&lang=en`;
+            let url = `https://c-v5.onrender.com/tts?text=${say}&lang=en`;
 
             message.reply({
                 body: "",
