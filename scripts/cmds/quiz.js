@@ -10,7 +10,7 @@ module.exports = {
     longDescription: {
       en: "Play quiz and earn money."
     },
-    category: "ai",
+    category: "fun",
     guide: {
       en: "{pn} <category>"
     },
