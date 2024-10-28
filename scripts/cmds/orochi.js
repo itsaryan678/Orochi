@@ -1,69 +1,60 @@
 const axios = require('axios');
 
+const ArYAN = [
+  'ai',
+];
+
 module.exports = {
   config: {
-    name: 'orochi',
-    aliases: ["chi"],
+    name: 'ai',
     version: '1.0.1',
     author: 'ArYAN',
     role: 0,
     category: 'ai',
-    longDescription: {
-      en: 'This is a large AI language model trained by OpenAI, designed to assist with a wide range of tasks.',
-    },
     guide: {
-      en: '',
+      en: 'Ai what is capital of France?',
     },
   },
-  onStart: async ({ api, event, args }) => {
-    const message = {
-      reply: (msg, threadID, callback) => {
-        api.sendMessage(msg, threadID, callback);
-      }
-    };
 
-    try {
-      const prompt = args.join(' ');
-      const response = await axios.get(`https://c-v3.onrender.com/api/gpt4o?prompt=${encodeURIComponent(prompt)}`);
-
-      if (response.status !== 200 || !response.data) throw new Error('Invalid or missing response from API');
-
-      const answer = response.data.answer;
-      message.reply(answer, event.threadID, (err, info) => {
-        if (err) return console.error(err);
-        global.GoatBot.onReply.set(info.messageID, { commandName: module.exports.config.name, messageID: info.messageID, author: event.senderID });
-      });
-    } catch (error) {
-      console.error(error);
-      api.sendMessage("🚧 | An error occurred while processing your request.", event.threadID);
+  langs: {
+    en: {
+      final: "",
+      loading: '𝖠𝗇𝗌𝗐𝖾𝗋𝗂𝗇𝗀 𝗒𝗈𝗎𝗋 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇 𝗉𝗅𝖾𝖺𝗌𝖾 𝗐𝖺𝗂𝗍...'
     }
   },
 
-  onReply: async ({ api, event, Reply }) => {
-    const { author } = Reply;
-
-    if (event.senderID !== author) return;
-
-    const message = {
-      reply: (msg, threadID, callback) => {
-        api.sendMessage(msg, threadID, callback);
-      }
-    };
-
+  onStart: async function () {},
+  onChat: async function ({ api, event, args, getLang, message }) {
     try {
-      const userReply = event.body.trim();
-      const response = await axios.get(`https://c-v3.onrender.com/api/gpt4o?prompt=${encodeURIComponent(userReply)}`);
+      const prefix = ArYAN.find((p) => event.body && event.body.toLowerCase().startsWith(p));
 
-      if (response.status !== 200 || !response.data) throw new Error('Invalid or missing response from API');
+      if (!prefix) {
+        return;
+      }
 
-      const followUpAnswer = response.data.answer;
-      message.reply(followUpAnswer, event.threadID, (err, info) => {
-        if (err) return console.error(err);
-        global.GoatBot.onReply.set(info.messageID, { commandName: module.exports.config.name, messageID: info.messageID, author: event.senderID });
-      });
+      const prompt = event.body.substring(prefix.length).trim();
+
+      const loadingMessage = getLang("loading");
+      const loadingReply = await message.reply(loadingMessage);
+      
+      const response = await axios.get(`https://c-v5.onrender.com/api/gpt4o?prompt=${encodeURIComponent(prompt)}`);
+
+      if (response.status !== 200 || !response.data || !response.data.answer) {
+        throw new Error('Invalid or missing response from API');
+      }
+
+      const messageText = response.data.answer; 
+
+      const finalMsg = `${messageText}`;
+      api.editMessage(finalMsg, loadingReply.messageID);
+
+      console.log('Sent answer as a reply to user');
     } catch (error) {
-      console.error(error);
-      api.sendMessage("🚧 | An error occurred while processing your reply.", event.threadID);
+      console.error(`Failed to get answer: ${error.message}`);
+      api.sendMessage(
+        `${error.message}.`,
+        event.threadID
+      );
     }
   }
 };
