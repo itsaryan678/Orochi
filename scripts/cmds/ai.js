@@ -19,7 +19,8 @@ module.exports = {
   langs: {
     en: {
       final: "",
-      loading: '𝖠𝗇𝗌𝗐𝖾𝗋𝗂𝗇𝗀 𝗒𝗈𝗎𝗋 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇 𝗉𝗅𝖾𝖺𝗌𝖾 𝗐𝖺𝗂𝗍...'
+      loading: '𝖠𝗇𝗌𝗐𝖾𝗋𝗂𝗇𝗀 𝗒𝗈𝗎𝗋 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇 𝗉𝗅𝖾𝖺𝗌𝖾 𝗐𝖺𝗂𝗍...',
+      noPrompt: 'Please provide your question.',
     }
   },
 
@@ -34,6 +35,10 @@ module.exports = {
 
       const prompt = event.body.substring(prefix.length).trim();
 
+      if (!prompt) {
+        return message.reply(getLang("noPrompt"));
+      }
+
       const loadingMessage = getLang("loading");
       const loadingReply = await message.reply(loadingMessage);
       
@@ -44,7 +49,6 @@ module.exports = {
       }
 
       const messageText = response.data.answer; 
-
       const finalMsg = `${messageText}`;
       api.editMessage(finalMsg, loadingReply.messageID);
 
