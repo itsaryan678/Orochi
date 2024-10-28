@@ -12,7 +12,8 @@ module.exports = {
   config: {
     name: "shoti",
     author: "ArYAN",
-    countDown: "10"
+    countDown: "10",
+    category: "media"
   },
 
   onStart: async ({ message, args, api, event }) => {
