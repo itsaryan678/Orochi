@@ -4,7 +4,7 @@ const mediaTypes = ["photo", 'png', "animated_image", "video", "audio"];
 module.exports = {
   config: {
     name: "report",
-    aliases: [`callad`],
+    aliases: [`callad`, `called`],
     version: "1.0",
     author: "NTKhang & ArYAN",
     countDown: 10,
@@ -15,7 +15,7 @@ module.exports = {
     longDescription: {
       en: "send report, feedback, bug, to Cassidy admins"
     },
-    category: "boxchat",
+    category: "info",
     guide: {
       en: "   {pn} <message>"
     }
