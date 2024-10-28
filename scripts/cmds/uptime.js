@@ -11,7 +11,7 @@ module.exports = {
  version: "1.1",
  author: "Team Calyx",
  role: 0,
- category: "system",
+ category: "info",
  guide: {
  en: "Use {p}info"
  }
