@@ -7,7 +7,7 @@ module.exports = {
  version: '2.2',
  author: 'ArYAN',
  role: 0,
- category: 'music',
+ category: 'media',
  longDescription: {
  en: 'This command allows you to search song lyrics from Google',
  },
