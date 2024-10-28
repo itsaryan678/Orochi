@@ -9,7 +9,7 @@ module.exports = {
         role: 0,
         shortDescription: "say something",
         longDescription: "",
-        category: "fun",
+        category: "media",
         guide: {
             vi: "{pn} text ",
             en: "{pn} text "
