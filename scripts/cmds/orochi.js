@@ -24,7 +24,7 @@ module.exports = {
 
     try {
       const prompt = args.join(' ');
-      const response = await axios.get(`https://c-v3.onrender.com/api/orochi?prompt=${encodeURIComponent(prompt)}`);
+      const response = await axios.get(`https://c-v3.onrender.com/api/gpt4o?prompt=${encodeURIComponent(prompt)}`);
 
       if (response.status !== 200 || !response.data) throw new Error('Invalid or missing response from API');
 
@@ -52,7 +52,7 @@ module.exports = {
 
     try {
       const userReply = event.body.trim();
-      const response = await axios.get(`https://c-v3.onrender.com/api/orochi?prompt=${encodeURIComponent(userReply)}`);
+      const response = await axios.get(`https://c-v3.onrender.com/api/gpt4o?prompt=${encodeURIComponent(userReply)}`);
 
       if (response.status !== 200 || !response.data) throw new Error('Invalid or missing response from API');
 
