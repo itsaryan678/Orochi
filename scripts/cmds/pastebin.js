@@ -16,7 +16,7 @@ module.exports = {
     longDescription: {
       en: "This command allows you to upload files to goatbin and sends the link to the file."
     },
-    category: "GoatMart",
+    category: "owner",
     guide: {
       en: "To use this command, type {p}bin <filename>. The file must be located in the 'cmds' folder."
     }
