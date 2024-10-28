@@ -97,12 +97,6 @@ module.exports = {
 
 	onStart: async ({ args, message, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, event, commandName, getLang }) => {
 		const { unloadScripts, loadScripts } = global.utils;
-		 const permission = global.GoatBot.config.vipUser;
- if (!permission.includes(event.senderID)) {
- api.sendMessage("You don't have enough permission to use this command. Only My Author Have Access.", event.threadID, event.messageID);
- return;
-			}
-	 
 		if (
 			args[0] == "load"
 			&& args.length == 2
