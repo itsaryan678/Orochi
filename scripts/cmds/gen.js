@@ -28,7 +28,7 @@ module.exports = {
 
  const startTime = new Date().getTime();
 
- const baseURL = `https://c-v3.onrender.com/v1/gen?prompt=${encodeURIComponent(prompt)}`;
+ const baseURL = `https://c-v5.onrender.com/v1/gen?prompt=${encodeURIComponent(prompt)}`;
 
  const response = await axios.get(baseURL);
  console.log('API Response:', response.data);
