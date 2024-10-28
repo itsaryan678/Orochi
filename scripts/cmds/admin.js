@@ -9,7 +9,7 @@ module.exports = {
 		countDown: 5,
 		role: 2,
 		description: "Add, remove, edit admin role",
-		category: "box chat",
+		category: "owner",
 		guide: ' {pn} [add | -a] <uid | @tag>: Add admin role for user'
 				+ '\n	 {pn} [remove | -r] <uid | @tag>: Remove admin role of user'
 				+ '\n	 {pn} [list | -l]: List all admins'
