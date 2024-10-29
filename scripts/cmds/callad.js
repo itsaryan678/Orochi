@@ -15,7 +15,7 @@ module.exports = {
     longDescription: {
       en: "send report, feedback, bug, to Cassidy admins"
     },
-    category: "info",
+    category: "box chat",
     guide: {
       en: "   {pn} <message>"
     }
