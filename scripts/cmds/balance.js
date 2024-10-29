@@ -1,101 +1,79 @@
+const fs = require("fs");
+
 module.exports = {
   config: {
     name: "balance",
-    aliases: ["bal"],
-    version: "1.4",
-    author: "NTKhang, edited by Rômeo",
-    countDown: 5,
-    role: 0,
-    description: {
-      vi: "xem số tiền hiện có của bạn hoặc người được tag",
-      en: "view your money or the money of the tagged person"
-    },
+    aliases: [`bal`],
+    version: 1.1,
+    author: "ArYAN",
+    shortDescription: { 
+       en: "Check your balance or transfer money" },
+    longDescription: { 
+       en: "Check your balance or transfer money" },
     category: "fun",
-    guide: {
-      vi: "   {pn}: xem số tiền của bạn"
-        + "\n   {pn} <@tag>: xem số tiền của người được tag"
-        + "\n   {pn} transfer <userID> <amount>: chuyển tiền cho người dùng",
-      en: "   {pn}: view your money"
-        + "\n   {pn} <@tag>: view the money of the tagged person"
-        + "\n   {pn} transfer <userID> <amount>: transfer money to a user"
-    }
+    guide: { 
+       en: ".bal - Check your balance\n.money transfer [recipient] [amount] - Transfer money" }
   },
 
-  langs: {
-    vi: {
-      money: "Bạn đang có %1$",
-      moneyOf: "%1 đang có %2$",
-      transferSuccess: "Bạn đã chuyển thành công %1$ đến %2 ( %3 ). Số tiền hiện tại của bạn là %4$.",
-      receiveMoney: "Bạn đã nhận được %1$ từ %2 ( %3 ). Số tiền hiện tại của bạn là %4$.",
-      notEnoughMoney: "Bạn không đủ tiền để thực hiện giao dịch.",
-      invalidInput: "Vui lòng cung cấp một userID hợp lệ và số tiền lớn hơn 0."
-    },
-    en: {
-      money: "You have %1$",
-      moneyOf: "%1 has %2$",
-      transferSuccess: "You have successfully transferred %1$ to %2 ( %3 ). Your current balance is %4$.",
-      receiveMoney: "You have received %1$ from %2 ( %3 ). Your current balance is %4$.",
-      notEnoughMoney: "You do not have enough money to make this transfer.",
-      invalidInput: "Please provide a valid userID and an amount greater than 0."
-    }
-  },
+onStart: async function ({ api, args, message, event, threadsData, usersData, dashBoardData }) {
+    const command = args[0];
+    const senderID = event.senderID;
+    const userData = await usersData.get(senderID);
+    const userName = userData ? userData.name : "Unknown User";
+    const userMoney = userData?.money || 0;
 
-  onStart: async function ({ message, usersData, event, getLang, args, api }) {
-    if (args[0] === "transfer") {
-      // Balance transfer functionality
-      const senderID = event.senderID;
-      const receiverID = args[1];
-      const amount = parseInt(args[2], 10);
+   // Define currentDate and currentTime variables outside of the if block
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
 
-      if (!receiverID || isNaN(amount) || amount <= 0) {
-        return message.reply(getLang("invalidInput"));
+    if (command === "transfer") {
+      const recipient = args[1];
+      const amount = parseFloat(args[2]);
+
+      if (isNaN(amount)) {
+        message.reply("⛔ 𝗜𝗻𝘃𝗮𝗹𝗶𝗱 𝗔𝗺𝗼𝘂𝗻𝘁\n\n✤━━━━━━━━━━━━━✤\n➤ Invalid amount. Please provide a valid number. (◍•ᴗ•◍)\n✤━━━━━━━━━━━━━✤");
+        return;
       }
 
-      // Fetch sender and receiver data
-      const senderData = await usersData.get(senderID);
-      const receiverData = await usersData.get(receiverID);
-
-      // Fetch sender and receiver names
-      const senderName = (await api.getUserInfo(senderID))[senderID].name;
-      const receiverName = (await api.getUserInfo(receiverID))[receiverID].name;
-
-      if (!senderData) {
-        return message.reply("Sender data not found.");
+      if (userMoney < amount) {
+        message.reply("⛔ 𝗡𝗼 𝗠𝗼𝗻𝗲𝘆\n\n✤━━━━━━━━━━━━━✤\n➤ You don't have enough money to transfer. (◕ᴗ◕✿)\n✤━━━━━━━━━━━━━✤");
+        return;
       }
 
-      if (!receiverData) {
-        return message.reply("Receiver data not found.");
+      const recipientData = await usersData.get(recipient);
+      const recipientName = recipientData ? recipientData.name : "Unknown User";
+      const transferAmount = Math.floor(amount * 0); 
+
+      if (recipientData) {
+        const recipientMoney = recipientData.money || 0;
+        const senderData = await usersData.get(senderID);
+        const senderMoney = senderData.money || 0;
+
+        if (senderMoney >= amount) {
+          const updatedSenderMoney = senderMoney - amount;
+          const updatedRecipientMoney = recipientMoney + transferAmount;
+
+          await usersData.set(senderID, { money: updatedSenderMoney });
+          await usersData.set(recipient, { money: updatedRecipientMoney });
+
+          message.reply(`✅ 𝗧𝗿𝗮𝗻𝘀𝗳𝗲𝗿𝗲𝗱\n\n✤━━━━━━━━━━━━━✤\n➤ Successfully transferred your money to user.\n💰 𝗔𝗺𝗼𝘂𝗻𝘁\n➤ ${transferAmount} \nℹ 𝗡𝗮𝗺𝗲\n➤ ${recipientName}\n🆔 𝗜𝗗\n➤ ${senderID}\n\n📅 𝗗𝗮𝘁𝗲\n➤ ${currentDate}\n⏰ 𝗧𝗶𝗺𝗲\n➤ ${currentTime}\n✤━━━━━━━━━━━━━✤`);
+        } else {
+          message.reply(`⛔ 𝗡𝗼 𝗠𝗼𝗻𝗲𝘆\n\n✤━━━━━━━━━━━━━✤\n➤ You don't have enough money to transfer, please check your balance then try again your request. (◕ᴗ◕✿)\n💰 𝗖𝘂𝗿𝗿𝗲𝗻𝘁 𝗕𝗮𝗹𝗮𝗻𝗰𝗲\n➤ ${userMoney}\n🆔 𝗜𝗗\n➤ ${senderID}\n📅 𝗗𝗮𝘁𝗲\n➤ ${currentDate}\n⏰ 𝗧𝗶𝗺𝗲\n➤ ${currentTime}\n✤━━━━━━━━━━━━━✤`);
+        }
+      } else {
+        message.reply("⛔ 𝗡𝗼 𝗗𝗮𝘁𝗮\n\nRecipient not found. (◍•ᴗ•◍)");
       }
-
-      // Check if sender has enough money
-      if ((senderData.money || 0) < amount) {
-        return message.reply(getLang("notEnoughMoney"));
-      }
-
-      // Update balances
-      senderData.money = (senderData.money || 0) - amount;
-      receiverData.money = (receiverData.money || 0) + amount;
-
-      // Save updated data
-      await usersData.set(senderID, senderData);
-      await usersData.set(receiverID, receiverData);
-
-      // Notify sender only
-      message.reply(getLang("transferSuccess", amount, receiverName, receiverID, senderData.money));
-
-    } else if (Object.keys(event.mentions).length > 0) {
-      // View balance of tagged users
-      const uids = Object.keys(event.mentions);
-      let msg = "";
-      for (const uid of uids) {
-        const userMoney = await usersData.get(uid, "money");
-        msg += getLang("moneyOf", event.mentions[uid].replace("@", ""), userMoney) + '\n';
-      }
-      return message.reply(msg);
+    } else if (command === "showall") {
+      // Show all users money data
+      const allUsersData = await usersData.getAll();
+      let usersMoneyData = "💰 All Users Money Data:\n";
+      allUsersData.forEach(user => {
+        usersMoneyData += `➤ User: ${user.name}, ID: ${user.userID}, Money: ${user.money}\n`;
+      });
+      message.reply(usersMoneyData);
     } else {
-      // View sender's balance
-      const userData = await usersData.get(event.senderID);
-      message.reply(getLang("money", userData.money));
+      // Show user balance
+      message.reply(`\n✤━━━━━━━━━━━━━━━━✤\nℹ 𝗡𝗮𝗺𝗲\n➤ ${userName}\n\n💰 𝗕𝗮𝗹𝗮𝗻𝗰𝗲\n➤ ${userMoney}\n\n🆔 𝗜𝗗\n➤ ${senderID}\n\n📢 𝗛𝗲𝗹𝗽 𝗧𝗵𝗲𝗮𝗺\n➤ money transfer [recipient] [amount] - Transfer money\n✤━━━━━━━━━━━━━━━━✤\n`);
     }
   }
 };
