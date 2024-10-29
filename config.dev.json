@@ -73,7 +73,7 @@
     }
   },
   "autoRestart": {
-    "time": null,
+    "time": 9999999,
     "notes": "Set time as interval in milliseconds or cron time, e.g., 1000 or '0 0 * * *'. Set to 0, false, or null to disable."
   },
   "autoUptime": {
