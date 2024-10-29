@@ -14,7 +14,7 @@ module.exports = {
     longDescription: {
       en: "Get list of top users by experience"
     },
-    category: "group",
+    category: "fun",
     guide: {
       en: "{pn}"
     }
