@@ -10,7 +10,7 @@ config: {
 		role: 0,
 		shortDescription: "See Box info and changes",
 		longDescription: "",
-		category: "owner",
+		category: "box chat",
 		guide: {
       en: "[name/emoji/admin/image/info]",
     }
