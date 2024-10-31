@@ -3,9 +3,9 @@ module.exports = {
  name: "pending",
  aliases: [`pen`],
  version: "1.0",
- author: "Rômeo",//cmd modified by Aryan Chauhan don't change my author name
+ author: "ArYAN",//cmd modified by Aryan Chauhan don't change my author name
  countDown: 0,
- role: 2,
+ role: 0,
  shortDescription: {
  vi: "",
  en: ""
