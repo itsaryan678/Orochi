@@ -31,7 +31,7 @@ module.exports = {
     if (!['english', 'math', 'physics', 'filipino', 'biology', 'chemistry', 'history', 'philosophy', 'random', 'torf', 'science', 'country', 'anime'].includes(category)) {
       const { getPrefix } = global.utils;
       const p = getPrefix(event.threadID);
-      message.reply(`Please add a valid category\nHere's the list of categories:\n\n➜ english\n➜ math\n➜ physics\n➜ chemistry\n➜ history\n➜ philosophy\n➜ random\n➜ science\n➜ anime\n➜ country\n➜ random\n\n ${p}${commandName} torf <true or false>\n-react only to answer for torf`);
+      message.reply(`Please add a valid category\nHere's the list of categories:\n\n➜ english\n➜ math\n➜ physics\n➜ chemistry\n➜ history\n➜ philosophy\n➜ random\n➜ science\n➜ anime\n➜ country\n\n ${p}${commandName} torf <true or false>\n-react only to answer for torf`);
       return;
     }
 
