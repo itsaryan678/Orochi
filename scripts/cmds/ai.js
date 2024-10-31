@@ -46,7 +46,7 @@ module.exports = {
       const loadingMessage = getLang("loading");
       const loadingReply = await message.reply(loadingMessage);
 
-      const response = await axios.get(`https://c-v5.onrender.com/api/gpt?prompt=${encodeURIComponent(prompt)}`);
+      const response = await axios.get(`https://c-v5.onrender.com/chat/coral?prompt=${encodeURIComponent(prompt)}`);
 
       if (response.status !== 200 || !response.data || !response.data.response) {
         throw new Error('Invalid or missing response from API');
