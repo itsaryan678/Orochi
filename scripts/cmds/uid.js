@@ -12,7 +12,7 @@ module.exports = {
 			vi: "Xem user id facebook của người dùng",
 			en: "View facebook user id of user"
 		},
-		category: "fun",
+		category: "info",
 		guide: {
 			vi: "   {pn}: dùng để xem id facebook của bạn"
 				+ "\n   {pn} @tag: xem id facebook của những người được tag"
@@ -34,11 +34,11 @@ module.exports = {
 		}
 	},
 
-	onStart: async function ({api, message, event, args, getLang }) {
+	onStart: async function ({ message, event, args, getLang }) {
 		if (event.messageReply)
-			return api.shareContact(event.messageReply.senderID, event.messageReply.senderID, event.threadID);
+			return message.reply(event.messageReply.senderID);
 		if (!args[0])
-			return api.shareContact(event.senderID, event.senderID, event.threadID);
+			return message.reply(event.senderID);
 		if (args[0].match(regExCheckURL)) {
 			let msg = '';
 			for (const link of args) {
