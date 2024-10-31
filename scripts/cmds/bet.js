@@ -6,7 +6,7 @@ module.exports = {
  aliases: [],
  version: "2.1",
  author: "Team Calyx",
- countDown: 30,
+ countDown: 0,
  shortDescription: {
  en: "Bet game",
  },
