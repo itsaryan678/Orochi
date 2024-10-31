@@ -10,7 +10,7 @@ module.exports = {
      role: 0,
     shortDescription: " ",
     longDescription: "",
-    category: "love",
+    category: "fun",
     guide: "{pn}"
   },
   onStart: async function ({ api, event, args, usersData, threadsData }) {
