@@ -23,7 +23,7 @@ module.exports = {
  const imgurl = encodeURIComponent(event.messageReply.attachments[0].url);
  api.setMessageReaction("⏰", event.messageID, () => {}, true);
 
- const lado = `https://c-v3.onrender.com/i2art?url=${imgurl}`;
+ const lado = `https://c-v5.onrender.com/i2art?url=${imgurl}`;
 
  try {
  const shortUrl = await tinyurl.shorten(lado);
