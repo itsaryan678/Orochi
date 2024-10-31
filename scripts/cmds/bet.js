@@ -13,7 +13,7 @@ module.exports = {
  longDescription: {
  en: "A simple betting game where you can double or triple your bet—or lose it all. ",
  },
- category: "game",
+ category: "fun",
  },
  langs: {
  en: {
