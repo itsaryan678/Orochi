@@ -12,17 +12,19 @@ module.exports = {
     role: 0,
     category: 'ai',
     longDescription: {
-      en: 'This is a large Ai language model trained by OpenAi,it is designed to assist with a wide range of tasks.',
+      en: 'This is a large Ai language model trained by OpenAi, designed to assist with a wide range of tasks.',
     },
     guide: {
-      en: '\nAi < questions >\n\n🔎 𝗚𝘂𝗶𝗱𝗲\nAi what is capital of France?',
+      en: '\nAi < question >\n\n🔎 𝗚𝘂𝗶𝗱𝗲\nAi what is the capital of France?',
     },
   },
 
   langs: {
     en: {
-      final: "",
-      loading: '𝖠𝗇𝗌𝗐𝖾𝗋𝗂𝗇𝗀 𝗒𝗈𝗎𝗋 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇 𝗉𝗅𝖾𝖺𝗌𝖾 𝗐𝖺𝗂𝗍'
+      noQuestion: 'Please provide your question.',
+      final: '',
+      loading: 'Answering your question, please wait...',
+      error: 'An error occurred. Please try again later.',
     }
   },
 
@@ -37,16 +39,20 @@ module.exports = {
 
       const prompt = event.body.substring(prefix.length).trim();
 
+      if (!prompt) {
+        return message.reply(getLang("noQuestion"));
+      }
+
       const loadingMessage = getLang("loading");
       const loadingReply = await message.reply(loadingMessage);
-      
-      const response = await axios.get(`https://apizaryan.onrender.com/api/gpt?prompt=${encodeURIComponent(prompt)}`);
+
+      const response = await axios.get(`https://c-v5.onrender.com/api/gpt?prompt=${encodeURIComponent(prompt)}`);
 
       if (response.status !== 200 || !response.data || !response.data.response) {
         throw new Error('Invalid or missing response from API');
       }
 
-      const messageText = response.data.response; 
+      const messageText = response.data.response;
 
       const finalMsg = `${messageText}`;
       api.editMessage(finalMsg, loadingReply.messageID);
@@ -55,7 +61,7 @@ module.exports = {
     } catch (error) {
       console.error(`Failed to get answer: ${error.message}`);
       api.sendMessage(
-        `${error.message}.`,
+        getLang("error"),
         event.threadID
       );
     }
