@@ -4,7 +4,7 @@ const moment = require("moment-timezone");
 module.exports = {
 	config: {
 		name: "ban",
-		version: "1.3",
+		version: "1.4",
 		author: "NTKhang",
 		countDown: 5,
 		role: 1,
@@ -27,40 +27,40 @@ module.exports = {
 
 	langs: {
 		vi: {
-			notFoundTarget: "⚠ | Vui lòng tag người cần cấm hoặc nhập uid hoặc link fb hoặc phản hồi tin nhắn của người cần cấm",
-			notFoundTargetUnban: "⚠ | Vui lòng tag người cần bỏ cấm hoặc nhập uid hoặc link fb hoặc phản hồi tin nhắn của người cần bỏ cấm",
-			userNotBanned: "⚠ | Người mang id %1 không bị cấm khỏi box chat này",
+			notFoundTarget: "⚠️ | Vui lòng tag người cần cấm hoặc nhập uid hoặc link fb hoặc phản hồi tin nhắn của người cần cấm",
+			notFoundTargetUnban: "⚠️ | Vui lòng tag người cần bỏ cấm hoặc nhập uid hoặc link fb hoặc phản hồi tin nhắn của người cần bỏ cấm",
+			userNotBanned: "⚠️ | Người mang id %1 không bị cấm khỏi box chat này",
 			unbannedSuccess: "✅ | Đã bỏ cấm %1 khỏi box chat!",
-			cantSelfBan: "⚠ | Bạn không thể tự cấm chính mình!",
+			cantSelfBan: "⚠️ | Bạn không thể tự cấm chính mình!",
 			cantBanAdmin: "❌ | Bạn không thể cấm quản trị viên!",
 			existedBan: "❌ | Người này đã bị cấm từ trước!",
 			noReason: "Không có lý do",
 			bannedSuccess: "✅ | Đã cấm %1 khỏi box chat!",
-			needAdmin: "⚠ | Bot cần quyền quản trị viên để kick thành viên bị cấm",
+			needAdmin: "⚠️ | Bot cần quyền quản trị viên để kick thành viên bị cấm",
 			noName: "Người dùng facebook",
 			noData: "📑 | Không có thành viên nào bị cấm trong box chat này",
 			listBanned: "📑 | Danh sách thành viên bị cấm trong box chat này (trang %1/%2)",
 			content: "%1/ %2 (%3)\nLý do: %4\nThời gian cấm: %5\n\n",
-			needAdminToKick: "⚠ | Thành viên %1 (%2) bị cấm khỏi box chat, nhưng bot không có quyền quản trị viên để kick thành viên này, vui lòng cấp quyền quản trị viên cho bot để kick thành viên này",
-			bannedKick: "⚠ | %1 đã bị cấm khỏi box chat từ trước!\nUID: %2\nLý do: %3\nThời gian cấm: %4\n\nBot đã tự động kick thành viên này"
+			needAdminToKick: "⚠️ | Thành viên %1 (%2) bị cấm khỏi box chat, nhưng bot không có quyền quản trị viên để kick thành viên này, vui lòng cấp quyền quản trị viên cho bot để kick thành viên này",
+			bannedKick: "⚠️ | %1 đã bị cấm khỏi box chat từ trước!\nUID: %2\nLý do: %3\nThời gian cấm: %4\n\nBot đã tự động kick thành viên này"
 		},
 		en: {
-			notFoundTarget: "⚠ | Please tag the person to ban or enter uid or fb link or reply to the message of the person to ban",
-			notFoundTargetUnban: "⚠ | Please tag the person to unban or enter uid or fb link or reply to the message of the person to unban",
-			userNotBanned: "⚠ | The person with id %1 is not banned from this box chat",
+			notFoundTarget: "⚠️ | Please tag the person to ban or enter uid or fb link or reply to the message of the person to ban",
+			notFoundTargetUnban: "⚠️ | Please tag the person to unban or enter uid or fb link or reply to the message of the person to unban",
+			userNotBanned: "⚠️ | The person with id %1 is not banned from this box chat",
 			unbannedSuccess: "✅ | Unbanned %1 from box chat!",
-			cantSelfBan: "⚠ | You can't ban yourself!",
+			cantSelfBan: "⚠️ | You can't ban yourself!",
 			cantBanAdmin: "❌ | You can't ban the administrator!",
 			existedBan: "❌ | This person has been banned before!",
 			noReason: "No reason",
 			bannedSuccess: "✅ | Banned %1 from box chat!",
-			needAdmin: "⚠ | Bot needs administrator permission to kick banned members",
+			needAdmin: "⚠️ | Bot needs administrator permission to kick banned members",
 			noName: "Facebook user",
 			noData: "📑 | There are no banned members in this box chat",
 			listBanned: "📑 | List of banned members in this box chat (page %1/%2)",
 			content: "%1/ %2 (%3)\nReason: %4\nBan time: %5\n\n",
-			needAdminToKick: "⚠ | Member %1 (%2) has been banned from box chat, but the bot does not have administrator permission to kick this member, please grant administrator permission to the bot to kick this member",
-			bannedKick: "⚠ | %1 has been banned from box chat before!\nUID: %2\nReason: %3\nBan time: %4\n\nBot has automatically kicked this member"
+			needAdminToKick: "⚠️ | Member %1 (%2) has been banned from box chat, but the bot does not have administrator permission to kick this member, please grant administrator permission to the bot to kick this member",
+			bannedKick: "⚠️ | %1 has been banned from box chat before!\nUID: %2\nReason: %3\nBan time: %4\n\nBot has automatically kicked this member"
 		}
 	},
 
@@ -161,9 +161,11 @@ module.exports = {
 		await threadsData.set(event.threadID, dataBanned, 'data.banned_ban');
 		message.reply(getLang('bannedSuccess', name), () => {
 			if (members.some(item => item.userID == target)) {
-				if (adminIDs.includes(api.getCurrentUserID()))
-					api.removeUserFromGroup(target, event.threadID);
-				else
+				if (adminIDs.includes(api.getCurrentUserID())) {
+					if (event.participantIDs.includes(target))
+						api.removeUserFromGroup(target, event.threadID);
+				}
+				else {
 					message.send(getLang('needAdmin'), (err, info) => {
 						global.GoatBot.onEvent.push({
 							messageID: info.messageID,
@@ -177,6 +179,7 @@ module.exports = {
 							}
 						});
 					});
+				}
 			}
 		});
 	},
