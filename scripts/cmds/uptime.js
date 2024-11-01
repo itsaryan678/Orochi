@@ -1,117 +1,119 @@
-const os = require('os');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const fs = require('fs-extra');
-const path = require('path');
+const os = require("os");
+const fs = require("fs-extra");
+
+const startTime = new Date(); // Moved outside onStart
 
 module.exports = {
- config: {
- name: "uptime",
- aliases: ["up"],
- version: "1.1",
- author: "Team Calyx",
- role: 0,
- category: "info",
- guide: {
- en: "Use {p}info"
- }
- },
- onStart: async function ({ message, event, api }) {
+  config: {
+    name: "uptime",
+    aliases: ["up", "upt", "stats"],
+    author: "ArYAN",
+    countDown: 0,
+    role: 0,
+    category: "system",
+    longDescription: {
+      en: "Get System Information",
+    },
+  },
+  
+  onStart: async function ({ api, event, args, threadsData, usersData }) {
+    try {
+      const uptimeInSeconds = (new Date() - startTime) / 1000;
 
- const timeStart = Date.now(); // Start time for ping calculation
+      const seconds = uptimeInSeconds;
+      const days = Math.floor(seconds / (3600 * 24));
+      const hours = Math.floor((seconds % (3600 * 24)) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secondsLeft = Math.floor(seconds % 60);
+      const uptimeFormatted = `${days}d ${hours}h ${minutes}m ${secondsLeft}s`;
 
- // Format current date and time in Bangladesh time (UTC+6)
- const currentTime = new Date();
- const options = { timeZone: 'Asia/Dhaka', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
- const formattedDate = currentTime.toLocaleDateString('en-GB', { timeZone: 'Asia/Dhaka' });
- const formattedTime = currentTime.toLocaleString('en-GB', options);
+      const loadAverage = os.loadavg();
+      const cpuUsage =
+        os
+          .cpus()
+          .map((cpu) => cpu.times.user)
+          .reduce((acc, curr) => acc + curr) / os.cpus().length;
 
- const uptime = process.uptime();
- const formattedUptime = formatMilliseconds(uptime * 1000);
+      const totalMemoryGB = os.totalmem() / 1024 ** 3;
+      const freeMemoryGB = os.freemem() / 1024 ** 3;
+      const usedMemoryGB = totalMemoryGB - freeMemoryGB;
 
- const totalMemory = os.totalmem();
- const freeMemory = os.freemem();
- const usedMemory = totalMemory - freeMemory;
+      const allUsers = await usersData.getAll();
+      const allThreads = await threadsData.getAll();
+      const currentDate = new Date();
+      const options = { year: "numeric", month: "numeric", day: "numeric" };
+      const date = currentDate.toLocaleDateString("en-US", options);
+      const time = currentDate.toLocaleTimeString("en-US", {
+        timeZone: "Asia/Kolkata",
+        hour12: true,
+      });
 
- const diskUsage = await getDiskUsage();
- const ping = Date.now() - timeStart; // Calculate ping as the difference between now and the start time
- const hostname = os.hostname();
+      const timeStart = Date.now();
+      await api.sendMessage({
+        body: "ðŸ”Ž| checking........",
+      }, event.threadID);
 
- const systemInfo = {
- os: `${os.type()} ${os.release()} (${os.arch()})`,
- hostname: hostname,
- cpu: `${os.cpus()[0].model} (${os.cpus().length} core(s))`,
- ram: `${prettyBytes(usedMemory)} / ${prettyBytes(totalMemory)} (used)`,
- freeRam: `${prettyBytes(freeMemory)}`,
- storage: `${prettyBytes(diskUsage.used)} / ${prettyBytes(diskUsage.total)} (used)`,
- freeStorage: `${prettyBytes(diskUsage.total - diskUsage.used)}`,
- loadAvg: os.loadavg()[0] // 1-minute load average
- };
+      const ping = Date.now() - timeStart;
 
- const userName = event.senderID ? await getUserName(event.senderID, api) : "Unknown User";
- 
- // Fetch the count of dependencies from package.json
- const packages = getPackages();
- const packageCount = Object.keys(packages).length;
+      let pingStatus = "â›”| ð–¡ð–ºð–½ ð–²ð—’ð—Œð—ð–¾ð—†";
+      if (ping < 1000) {
+        pingStatus = "âœ…| ð–²ð—†ð—ˆð—ˆð—ð— ð–²ð—’ð—Œð—ð–¾ð—†";
+      }
+      const systemInfo = `â™¡   âˆ©_âˆ©
+ ï¼ˆâ€žâ€¢ ÖŠ â€¢â€ž)â™¡
+â•­â”€âˆªâˆªâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€âŸ¡
+â”‚ ð—¨ð—£ð—§ð—œð— ð—˜ ð—œð—¡ð—™ð—¢
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€âŸ¡
+â”‚ ðŸ¤– ð—•ð—¢ð—§ ð—œð—¡ð—™ð—¢ 
+â”‚ ð™½ð™°ð™¼ð™´: ð™¶ðš˜ðšŠðšð™±ðš˜ðš
+â”‚ ð™»ð™°ð™½ð™¶: ð™½ðš˜ðšðšŽðš“ðšœ
+â”‚ ð™¿ðšð™µð™¸ðš‡: .
+â”‚ ð™³ð™´ðš…ðš‚: ð™°ðš›ðš¢ ðšƒðšŽðšŠðš–
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€âŸ¡
+â”‚ â° ð—¥ð—¨ð—¡ð—§ð—œð— ð—˜
+â”‚  ${uptimeFormatted}
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€âŸ¡
+â”‚ ðŸ‘‘ ð—¦ð—¬ð—¦ð—§ð—˜ð—  ð—œð—¡ð—™ð—¢
+â”‚ð™¾ðš‚: ${os.type()} ${os.arch()}
+â”‚ð™»ð™°ð™½ð™¶ ðš…ð™´ðš: ${process.version}
+â”‚ð™²ð™¿ðš„ ð™¼ð™¾ð™³ð™´ð™»: ${os.cpus()[0].model}
+â”‚ðš‚ðšƒð™¾ðšð™°ð™¶ð™´: ${usedMemoryGB.toFixed(2)} GB / ${totalMemoryGB.toFixed(2)} GB
+â”‚ð™²ð™¿ðš„ ðš„ðš‚ð™°ð™¶ð™´: ${cpuUsage.toFixed(1)}%
+â”‚ðšð™°ð™¼ ðš„ðš‚ð™¶ð™´: ${process.memoryUsage().heapUsed / 1024 / 1024} MB;
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€âŸ¡
+â”‚ âœ… ð—¢ð—§ð—›ð—˜ð—¥ ð—œð—¡ð—™ð—¢
+â”‚ð™³ð™°ðšƒð™´: ${date}
+â”‚ðšƒð™¸ð™¼ð™´: ${time}
+â”‚ðš„ðš‚ð™´ðšðš‚: ${allUsers.length}
+â”‚ðšƒð™·ðšð™´ð™°ð™³ðš‚: ${allThreads.length}
+â”‚ð™¿ð™¸ð™½ð™¶: ${ping}ðš–ðšœ
+â”‚ðš‚ðšƒð™°ðšƒðš„ðš‚: ${pingStatus}
+â•°â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€âŸ¡
+`;
 
- const response = `📅 Date: ${formattedDate}\n`
- + `⏰ Current time: ${formattedTime}\n`
- + `🤖 Bot Uptime: ${formattedUptime}\n`
- + `🗂 Number of packages: ${packageCount}\n`
- + `🔣 Bot status: smooth\n`
- + `📋 OS: ${systemInfo.os}\n`
- + `🏷 Hostname: Heroku\n`
- + `💾 CPU: ${systemInfo.cpu}\n`
- + `📊 RAM: ${systemInfo.ram}\n`
- + `🛢 Free RAM: ${systemInfo.freeRam}\n`
- + `🗄 Storage: ${systemInfo.storage}\n`
- + `📑 Free Storage: ${systemInfo.freeStorage}\n`
- + `🛜 Ping: ${ping}ms\n`
- + `👤 Requested by: ${userName}`;
-
- message.reply(response);
- }
+      api.sendMessage(
+        {
+          body: systemInfo,
+        },
+        event.threadID,
+        (err, messageInfo) => {
+          if (err) {
+            console.error("Error sending message with attachment:", err);
+          } else {
+            console.log(
+              "Message with attachment sent successfully:",
+              messageInfo,
+            );
+          }
+        },
+      );
+    } catch (error) {
+      console.error("Error retrieving system information:", error);
+      api.sendMessage(
+        "Unable to retrieve system information.",
+        event.threadID,
+        event.messageID,
+      );
+    }
+  },
 };
-
-async function getDiskUsage() {
- const { stdout } = await exec('df -k /');
- const [_, total, used] = stdout.split('\n')[1].split(/\s+/).filter(Boolean);
- return { total: parseInt(total) * 1024, used: parseInt(used) * 1024 };
-}
-
-async function getUserName(userID, api) {
- try {
- const userInfo = await api.getUserInfo(userID);
- return userInfo[userID].name || "Unknown User";
- } catch (error) {
- return "Unknown User";
- }
-}
-
-function formatMilliseconds(ms) {
- const seconds = Math.floor(ms / 1000);
- const minutes = Math.floor(seconds / 60);
- const hours = Math.floor(minutes / 60);
- 
- return `${String(hours).padStart(2, '0')}h ${String(minutes % 60).padStart(2, '0')}m ${String(seconds % 60).padStart(2, '0')}s`;
-}
-
-function prettyBytes(bytes) {
- const units = ['B', 'KB', 'MB', 'GB', 'TB'];
- let i = 0;
- while (bytes >= 1024 && i < units.length - 1) {
- bytes /= 1024;
- i++;
- }
- return `${bytes.toFixed(2)} ${units[i]}`;
-}
-
-function getPackages() {
- try {
- const packageJsonPath = path.join(__dirname, '..', '..', 'package.json'); // Adjust path if necessary
- const packageJson = fs.readJsonSync(packageJsonPath);
- return packageJson.dependencies || {};
- } catch (error) {
- return {};
- }
-}
