@@ -7,7 +7,7 @@ module.exports = {
     aliases: ["app"],
     author: "ArYAN", // don't change my credit
     countDown: 10,
-    role: 0,
+    role: 2,
     category: "owner",
     shortDescription: {
       en: "Approve Unapproved Groups Chats",
