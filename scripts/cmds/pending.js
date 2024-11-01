@@ -5,7 +5,7 @@ module.exports = {
  version: "1.0",
  author: "ArYAN",//cmd modified by Aryan Chauhan don't change my author name
  countDown: 0,
- role: 0,
+ role: 2,
  shortDescription: {
  vi: "",
  en: ""
