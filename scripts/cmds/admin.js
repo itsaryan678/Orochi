@@ -28,14 +28,7 @@ module.exports = {
 	},
 
 	onStart: async function ({ message, args, usersData, event, getLang, api }) {
- // Check if user has VIP permission
- const permission = global.GoatBot.config.vipUser;
- if (!permission.includes(event.senderID)) {
- api.sendMessage("You don't have enough permission to use this command. Only My Authors Have Access.", event.threadID, event.messageID);
- return;
- }
-
-		switch (args[0]) {
+          switch (args[0]) {
 			case "add":
 			case "-a": {
 				if (args[1]) {
