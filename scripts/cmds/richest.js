@@ -12,7 +12,7 @@ module.exports = {
       en: "Top Users"
     },
     longDescription: {
-      en: "Get list of top users by experience"
+      en: "Get list of top users by wealth"
     },
     category: "fun",
     guide: {
@@ -23,24 +23,25 @@ module.exports = {
     const number = 10; 
     const allUsers = await usersData.getAll();
 
-    const usersWithExp = allUsers.filter(user => user.exp > 0).sort((a, b) => b.exp - a.exp).slice(0, number);
+    const topUsersByMoney = allUsers
+      .sort((a, b) => b.money - a.money)
+      .slice(0, number);
 
-    if (usersWithExp.length < number) {
-      message.reply(`There are not enough users with experience points to display a top ${number}.`);
+    if (topUsersByMoney.length < number) {
+      message.reply(`There are not enough users to display a top ${number}.`);
       return;
     }
 
-    const topUsersList = usersWithExp.map((user, index) => 
+    const topUsersList = topUsersByMoney.map((user, index) => 
       `✤━━━━[  ${index + 1} ]━━━━✤\n
       ℹ 𝗨𝘀𝗲𝗿 𝗡𝗮𝗺𝗲: ${user.name}
       🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: ${user.userID}
-      💸 𝗨𝘀𝗲𝗿 𝗠𝗼𝗻𝗲𝘆: ${user.money}
-      🌟 𝗨𝘀𝗲𝗿 𝗘𝘅𝗽: ${user.exp}\n\n`
+      💸 𝗨𝘀𝗲𝗿 𝗠𝗼𝗻𝗲𝘆: ${user.money}\n\n`
     );
 
     api.setMessageReaction('👑', event.messageID, () => {}, true);
 
-    const messageText = `✨ Top ${number} Users by Experience\n\n${topUsersList.join('\n')}`;
+    const messageText = `✨ Top ${number} Users by Wealth\n\n${topUsersList.join('\n')}`;
 
     message.reply(messageText);
   }
