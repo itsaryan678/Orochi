@@ -31,16 +31,16 @@ module.exports = {
       const prompt = event.body.substring(prefix.length).trim();
 
       if (!prompt) {
-        return message.reply("🤖 𝗔𝗿𝗰𝗵𝗲𝗱\n\nPlease provide a question.");
+        return message.reply("Please provide a question.");
       }
 
-      const response = await axios.get(`https://c-v5.onrender.com/api/arched?prompt=${encodeURIComponent(prompt)}`);
+      const response = await axios.get(`https://c-v5.onrender.com/api/gpt?prompt=${encodeURIComponent(prompt)}`);
 
-      if (response.status !== 200 || !response.data || !response.data.answer) {
+      if (response.status !== 200 || !response.data || !response.data.response) {
         throw new Error('Invalid or missing response from API');
       }
 
-      const messageText = response.data.answer;
+      const messageText = response.data.response;
 
       await message.reply(messageText);
 
